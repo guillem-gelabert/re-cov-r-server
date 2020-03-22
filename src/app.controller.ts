@@ -12,6 +12,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { AuthService } from './auth/auth.service';
 import { CreateUserDto } from './users/dto/create-user.dto';
+import { User } from './users';
 
 @Controller()
 export class AppController {
@@ -25,11 +26,6 @@ export class AppController {
     return this.usersService.create(createUserDto);
   }
 
-  // @Get(':username')
-  // findOne(@Param('username') username: User['username']): Promise<User> {
-  //   return this.usersService.findOne(username);
-  // }
-
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@RequestDecorator() req: Request) {
@@ -38,7 +34,7 @@ export class AppController {
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  async login(@RequestDecorator() req: Request) {
-    return this.authService.login(req.user as any);
+  async login(@RequestDecorator() req: Request & { user: User }) {
+    return this.authService.login(req.user);
   }
 }

@@ -11,5 +11,6 @@ import { USER_MODEL } from './constants';
   ],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}

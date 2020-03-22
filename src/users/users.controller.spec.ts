@@ -14,7 +14,7 @@ describe('Users Controller', () => {
         UsersService,
         {
           provide: getModelToken(USER_MODEL),
-          useValue: { username: '', email: '' },
+          useValue: { username: '', email: '', password: '' },
         },
       ],
     }).compile();

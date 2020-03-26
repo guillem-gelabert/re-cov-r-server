@@ -3,6 +3,7 @@ import { UsersService, User } from '../users';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { compare } from 'bcrypt';
+import { omit } from 'lodash';
 @Injectable()
 export class AuthService {
   constructor(
@@ -14,29 +15,34 @@ export class AuthService {
     username: string,
     password: string,
   ): Promise<Omit<User, 'hash'> | null> {
-    const user = await this.usersService.findOneByUsername(username);
-    if (!user) return null;
-    let isValidPassword;
     try {
-      isValidPassword = await compare(password, user.hash);
-    } catch (e) {
-      console.log('bcrypt', e); // FIXME: add error handling
-    }
+      const user = await this.usersService.findOne({ username });
+      if (!user) throw new Error('User does not exist');
+      let isValidPassword;
+      try {
+        isValidPassword = await compare(password, user.hash);
+        if (!isValidPassword) throw new Error('User does not exist');
+      } catch (e) {
+        console.log('bcrypt', e); // FIXME: add error handling
+      }
 
-    if (isValidPassword) {
-      const { hash, ...result } = user;
-      return result;
+      return omit(user, 'hash');
+    } catch (error) {
+      return null;
     }
-    return null;
   }
 
   async logIn(user: LoginDto) {
-    const validatedUser = await this.validateUser(user.username, user.password);
-    if (validatedUser) {
-      const payload = { username: user.username };
-      return { accessToken: this.jwtService.sign(payload) };
+    try {
+      const validatedUser = await this.validateUser(
+        user.username,
+        user.password,
+      );
+      if (!validatedUser) throw new Error('Invalid user');
+      return { accessToken: this.jwtService.sign({ username: user.username }) };
+    } catch (error) {
+      throw new UnauthorizedException();
     }
-    throw new UnauthorizedException();
   }
 
   async signToken(username: string): Promise<string> {

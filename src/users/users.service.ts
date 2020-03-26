@@ -13,23 +13,25 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User & Document> {
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 2);
-    const newUser = {
-      email: createUserDto.email,
-      username: createUserDto.username,
-      hash: hashedPassword,
-    };
-    const createdUser = new this.userModel(newUser);
-    return createdUser.save();
-  }
-
-  async findOneByUsername(
-    username: CreateUserDto['username'],
-  ): Promise<User | null> {
-    return this.userModel.findOne({ username }).lean();
+    try {
+      const hashedPassword = await bcrypt.hash(createUserDto.password, 2);
+      const newUser = {
+        email: createUserDto.email,
+        username: createUserDto.username,
+        hash: hashedPassword,
+      };
+      const createdUser = new this.userModel(newUser);
+      return createdUser.save();
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 
   async findOne(user: Partial<CreateUserDto>): Promise<User | null> {
-    return this.userModel.findOne({ username: user.username }).lean();
+    try {
+      return this.userModel.findOne({ username: user.username }).lean();
+    } catch (e) {
+      throw new Error(e);
+    }
   }
 }

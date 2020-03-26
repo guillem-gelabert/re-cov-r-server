@@ -8,4 +8,5 @@ type UserResponse {
 
 type Query {
   getUserDetails(input: String): UserResponse
+  whoAmI: User
 }

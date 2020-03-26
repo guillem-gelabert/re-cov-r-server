@@ -31,6 +31,8 @@ export abstract class IQuery {
     abstract user(input?: LogInInput): User | Promise<User>;
 
     abstract getUserDetails(input?: string): UserResponse | Promise<UserResponse>;
+
+    abstract whoAmI(): User | Promise<User>;
 }
 
 export class User {

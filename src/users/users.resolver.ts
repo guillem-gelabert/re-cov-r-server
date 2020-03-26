@@ -5,6 +5,8 @@ import { AuthSuccess } from '../graphql';
 import { AuthService } from '../auth';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from './currentUser.decorator';
+import { User } from './interfaces';
 
 @Resolver()
 export class UsersResolver {
@@ -15,10 +17,10 @@ export class UsersResolver {
 
   @Query()
   @UseGuards(JwtAuthGuard)
-  async getUserDetails(
-    @Args('input') input: string,
-  ): Promise<{ username: string }> {
-    return { username: input };
+  async whoAmI(@CurrentUser() user: User): Promise<User> {
+    const currentUser = await this.usersService.findOne(user);
+    if (!currentUser) throw new Error('Authentication Error');
+    return currentUser;
   }
 
   @Mutation()

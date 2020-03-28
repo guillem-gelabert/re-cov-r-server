@@ -28,10 +28,6 @@ export class UsersService {
   }
 
   async findOne(user: Partial<CreateUserDto>): Promise<User | null> {
-    try {
-      return this.userModel.findOne({ username: user.username }).lean();
-    } catch (e) {
-      throw new Error(e);
-    }
+    return this.userModel.findOne({ username: user.username }).lean();
   }
 }

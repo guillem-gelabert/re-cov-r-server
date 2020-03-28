@@ -1,0 +1,12 @@
+type Mutation {
+  createUser(input: SignInInput): AuthSuccess
+}
+
+type UserResponse {
+  username: String
+}
+
+type Query {
+  getUserDetails(input: String): UserResponse
+  whoAmI: User
+}

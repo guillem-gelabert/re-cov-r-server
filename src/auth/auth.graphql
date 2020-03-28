@@ -1,0 +1,25 @@
+type User {
+  email: String!
+  username: String!
+  password: String!
+}
+
+input LogInInput {
+  username: String!
+  password: String!
+}
+
+type AuthSuccess {
+  accessToken: String!
+}
+
+input SignInInput {
+  username: String!
+  password: String!
+  email: String!
+}
+
+type Query {
+  logIn(input: LogInInput): AuthSuccess
+  user(input: LogInInput): User!
+}

@@ -23,7 +23,7 @@ export class AuthService {
         isValidPassword = await compare(password, user.hash);
         if (!isValidPassword) throw new Error('User does not exist');
       } catch (e) {
-        console.log('bcrypt', e); // FIXME: add error handling
+        throw new UnauthorizedException();
       }
 
       return omit(user, 'hash');

@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    restart: always
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      MONGO_CONNECTION_STRING: mongodb://mongo:27017
+      NODE_ENV: DEV
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    restart: always
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081

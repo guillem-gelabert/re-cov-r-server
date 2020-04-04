@@ -6,7 +6,9 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/nest'),
+    MongooseModule.forRoot(
+      process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/nest',
+    ),
     UsersModule,
     AuthModule,
     GraphQLModule.forRoot({

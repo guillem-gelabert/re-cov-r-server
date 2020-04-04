@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService, User } from '../users';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
-import { compare } from 'bcrypt';
+import { compare } from 'bcryptjs';
 import { omit } from 'lodash';
 @Injectable()
 export class AuthService {
@@ -23,7 +23,7 @@ export class AuthService {
         isValidPassword = await compare(password, user.hash);
         if (!isValidPassword) throw new Error('User does not exist');
       } catch (e) {
-        console.log('bcrypt', e); // FIXME: add error handling
+        throw new UnauthorizedException();
       }
 
       return omit(user, 'hash');

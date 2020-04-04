@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Document } from 'mongoose';
 import { User } from './interfaces/user.interface';
@@ -23,7 +23,7 @@ export class UsersService {
       const createdUser = new this.userModel(newUser);
       return createdUser.save();
     } catch (e) {
-      throw new Error(e);
+      throw new InternalServerErrorException(e);
     }
   }
 

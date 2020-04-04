@@ -33,6 +33,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build Docker image
         env:
-          IMAGE_TAG: $({ github.sha })
+          IMAGE_TAG: ${{ github.sha }}
         run:
           docker build -t "re-cov-er-server:$IMAGE_TAG"

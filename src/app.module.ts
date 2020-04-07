@@ -4,11 +4,17 @@ import { UsersModule } from './users';
 import { AuthModule } from './auth/auth.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MONGO_CONNECTION_STRING } from './constants';
+
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      process.env.MONGO_CONNECTION_STRING || 'mongodb://localhost/nest',
-    ),
+    MongooseModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get(MONGO_CONNECTION_STRING),
+      }),
+      inject: [ConfigService],
+    }),
     UsersModule,
     AuthModule,
     GraphQLModule.forRoot({
@@ -19,6 +25,13 @@ import { join } from 'path';
       },
       playground: true,
       typePaths: ['./**/*.graphql'],
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [
+        join(process.cwd(), '.dev.env'),
+        join(process.cwd(), '.env'),
+      ],
     }),
   ],
 })
